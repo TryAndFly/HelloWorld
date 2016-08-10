@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.helloworld.MainActivity">
+
+    <include layout="@layout/back_toolbar"></include>
+
+    <include layout="@layout/content_main" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="400dp"
+        android:layout_gravity="right"
+        android:orientation="vertical">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab1"
+            borderWidth="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/fly"
+            app:backgroundTint="#ff87ffeb"
+            app:elevation="5dp"
+            app:rippleColor="#33728dff" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab2"
+            borderWidth="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/day"
+            app:backgroundTint="#ff87ffeb"
+            app:elevation="5dp"
+            app:rippleColor="#33728dff" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab3"
+            borderWidth="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/list"
+            app:backgroundTint="#ff87ffeb"
+            app:elevation="5dp"
+            app:rippleColor="#33728dff" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab4"
+            borderWidth="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/right"
+            app:backgroundTint="#ff87ffeb"
+            app:elevation="5dp"
+            app:rippleColor="#33728dff" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            borderWidth="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/pan"
+            app:backgroundTint="#ff87ffeb"
+            android:layout_marginBottom="10dp"
+            app:elevation="5dp"
+            app:rippleColor="#33728dff" />
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
