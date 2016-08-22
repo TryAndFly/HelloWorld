@@ -115,7 +115,6 @@ public class RegisterNextActivity extends BaseActivity {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-//                        Log.d("test", "提交验证吗成功"+data.toString());
                         Message message = new Message();
                         message.what = SUBMITOK;
                         handler.sendMessage(message);
@@ -124,12 +123,10 @@ public class RegisterNextActivity extends BaseActivity {
                         message.what = SENDOK;
                         handler.sendMessage(message);
                         //接触注册
-//                        Log.d("test", "获取验证吗成功" + data.toString());
                     } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                         //返回支持发送验证码的国家列表
                     }
                 } else {
-//                    Log.d("test","验证码错误");
                     Throwable throwable = (Throwable) data;
                     throwable.printStackTrace();
                     JSONObject object = null;
@@ -139,7 +136,6 @@ public class RegisterNextActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                     String des = object.optString("detail");//错误描述
-//                    int status = object.optInt("status");//错误代码
                     Message message = new Message();
                     message.what = FALSE;
                     message.obj = des;

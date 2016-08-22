@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.helloworld.MainActivity">
+    tools:context=".HomeMainActivity">
 
     <include layout="@layout/back_toolbar"></include>
-
-    <include layout="@layout/content_main" />
-
+    <com.example.helloworld.view.homeScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_height="match_parent">
+        <include layout="@layout/home_content" />
+    </com.example.helloworld.view.homeScrollView>
 
     <LinearLayout
         android:layout_width="wrap_content"

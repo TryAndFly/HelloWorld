@@ -9,7 +9,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.helloworld.MainActivity;
+import com.example.helloworld.HomeMainActivity;
 import com.example.helloworld.R;
 import com.example.helloworld.bmob_bean.User;
 import com.example.helloworld.util.Md5;
@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                Intent i = new Intent(LoginActivity.this, HomeMainActivity.class);
                 startActivity(i);
                 finish();
             }
