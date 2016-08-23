@@ -37,6 +37,8 @@
 
         <!--测试-->
         <activity android:name=".activity.TestActivity"></activity>
+        <!--写文章的活动-->
+        <activity android:name=".activity.WriteArticleActivity"></activity>
     </application>
 
 </manifest>

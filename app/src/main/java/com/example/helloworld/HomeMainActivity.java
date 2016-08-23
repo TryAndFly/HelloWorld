@@ -1,6 +1,7 @@
 package com.example.helloworld;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
@@ -14,7 +15,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.helloworld.activity.WriteArticleActivity;
 import com.example.helloworld.adapter.homeListViewAdapter;
 import com.example.helloworld.bean.HomeSummary;
 import com.example.helloworld.view.homeScrollView;
@@ -191,6 +194,15 @@ public class HomeMainActivity extends AppCompatActivity {
                 animator.setDuration(1000);
                 animator.start();
                 return true;
+            }
+        });
+
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(HomeMainActivity.this,"点击了编辑菜单",0).show();
+                Intent i = new Intent(HomeMainActivity.this, WriteArticleActivity.class);
+                startActivity(i);
             }
         });
 
