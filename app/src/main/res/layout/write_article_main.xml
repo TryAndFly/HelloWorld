@@ -21,9 +21,9 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:maxLines="1"
-                    android:id="@+id/title"
+                    android:id="@+id/titles"
                     android:hint="标题"/>
-                <EditText
+                <com.example.helloworld.view.articleEditor
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"

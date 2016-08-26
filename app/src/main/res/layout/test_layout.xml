@@ -1,37 +1,63 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+        <ImageView
+            android:id="@+id/image_header"
+            android:layout_width="150dp"
+            android:layout_height="150dp" />
 
-    <ImageView
-        android:id="@+id/image_header"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_below="@+id/loads"
+            android:layout_width="150dp"
+            android:layout_height="150dp" />
 
-    <Button
-        android:id="@+id/btn_selectimage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/image_header"
-        android:text="相册" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_takephoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_selectimage"
-        android:text="拍照" />
-    <Button
-        android:id="@+id/loads"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_takephoto"
-        android:text="下载" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
+        <com.example.helloworld.view.articleEditor
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/input"
+            android:hint="输入数据或图片"/>
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_below="@+id/loads"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
+    </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/btn_selectimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_header"
+            android:text="相册" />
+
+        <Button
+            android:id="@+id/btn_takephoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_selectimage"
+            android:text="插入图片" />
+        <Button
+            android:id="@+id/loads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_takephoto"
+            android:text="下载" />
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

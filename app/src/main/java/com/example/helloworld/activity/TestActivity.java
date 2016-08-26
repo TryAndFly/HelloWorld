@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.helloworld.R;
 import com.example.helloworld.bean.FeedBack;
 import com.example.helloworld.bean.FeedBackUrl;
+import com.example.helloworld.view.articleEditor;
 
 import java.io.File;
 
@@ -40,11 +41,12 @@ import cn.bmob.v3.listener.UploadFileListener;
  */
 public class TestActivity extends AppCompatActivity implements View.OnClickListener{
     private static final int IMAGE_REQUEST_CODE = 0;
-    private static final int CAMERA_REQUEST_CODE = 1;
     private static final int RESIZE_REQUEST_CODE = 2;
 
     private static final int GETURL = 4;
+    private static final int ERROR = 5;
 
+    private articleEditor editor;
     private String IMAGE_FILE_NAME = "header.jpg";
 
     private ImageView mImageHeader,imageView2;
@@ -63,10 +65,12 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                         public void done(String s, BmobException e) {
                             //将地址保存到网络上
                             Toast.makeText(TestActivity.this,"已经将地址保存到网络上",0).show();
+
                         }
                     });
                     break;
-                default:
+                case ERROR:
+                    Toast.makeText(TestActivity.this,"图片上传错误",0).show();
                     break;
             }
         }
@@ -86,6 +90,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         final Button selectBtn1 = (Button) findViewById(R.id.btn_selectimage);
         final Button selectBtn2 = (Button) findViewById(R.id.btn_takephoto);
         final Button selectBtn3 = (Button) findViewById(R.id.loads);
+        editor = (articleEditor) findViewById(R.id.input);
         selectBtn1.setOnClickListener(this);
         selectBtn2.setOnClickListener(this);
         selectBtn3.setOnClickListener(this);
@@ -107,17 +112,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(galleryIntent, IMAGE_REQUEST_CODE);
                 break;
             case R.id.btn_takephoto:
-                if (isSdcardExisting()) {
-                    Intent cameraIntent = new Intent(
-                            "android.media.action.IMAGE_CAPTURE");//拍照
-                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, getImageUri());
-                    cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
 
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
-                } else {
-                    Toast.makeText(v.getContext(), "请插入sd卡", Toast.LENGTH_LONG)
-                            .show();
-                }
                 break;
         }
     }
@@ -136,23 +131,15 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                     Cursor cursor=this.managedQuery(originalUri, imgs1, null, null, null);
                     int index=cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     cursor.moveToFirst();
-                    String img_url=cursor.getString(index);
-                    upload(img_url);
-
-                    break;
-                case CAMERA_REQUEST_CODE:
-                    if (isSdcardExisting()) {
-                        resizeImage(getImageUri());
-                        String []imgs={MediaStore.Images.Media.DATA};//将图片URI转换成存储路径
-                        Cursor cursor1=this.managedQuery(getImageUri(), imgs, null, null, null);
-                        int index1=cursor1.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        cursor1.moveToFirst();
-                        String img_url1=cursor1.getString(index1);
-                        upload(img_url1);
-                    } else {
-                        Toast.makeText(TestActivity.this, "未找到存储卡，无法存储照片！",
-                                Toast.LENGTH_LONG).show();
-                    }
+                    final String img_url=cursor.getString(index);
+                    editor.insertBitmap(img_url);
+                    // 上传该文件并获取url
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            upload(img_url);
+                        }
+                    }).start();
                     break;
 
                 case RESIZE_REQUEST_CODE:
@@ -181,8 +168,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("crop", "true");//可以裁剪
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 150);
-        intent.putExtra("outputY", 150);
+        intent.putExtra("outputX", 450);
+        intent.putExtra("outputY", 450);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, RESIZE_REQUEST_CODE);
     }
@@ -210,6 +197,11 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         icon.upload(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
+                if (e != null){
+                    Message message = new Message();
+                    message.what = ERROR;
+                    handler.sendMessage(message);
+                }
                 FeedBack feedBack = new FeedBack();
                 feedBack.setFace(icon);
                 feedBack.save();
