@@ -3,11 +3,14 @@ package com.example.helloworld;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.example.helloworld.activity.WriteArticleActivity;
 import com.example.helloworld.adapter.homeListViewAdapter;
 import com.example.helloworld.bean.HomeSummary;
 import com.example.helloworld.bmob_bean.Article;
+import com.example.helloworld.util.utils;
 import com.example.helloworld.view.homeScrollView;
 
 import java.util.ArrayList;
@@ -59,6 +63,21 @@ public class HomeMainActivity extends AppCompatActivity {
     private boolean tagLong = false;
 
     private float mTouch;
+    private ArrayList<HomeSummary> list;
+    private static final int LISTVIEW=1;
+
+    public static final String mBitmapTag = "☆";
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case LISTVIEW:
+                    homeListViewAdapter homeListViewAdapter = new homeListViewAdapter(HomeMainActivity.this, list);
+                    listView.setAdapter(homeListViewAdapter);
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +88,12 @@ public class HomeMainActivity extends AppCompatActivity {
         Bmob.initialize(this, "028acd02f32e5fb5fd2af4c29557cdcf");
 
         //初始化的时候查询是否已经登录
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         initView();
         setOnclick();
         scrollView.smoothScrollTo(0, 0);
-
 
         //测试
 //        Intent intent = new Intent(this, TestActivity.class);
@@ -99,7 +115,6 @@ public class HomeMainActivity extends AppCompatActivity {
         pageview.add(view1);
         pageview.add(view2);
         pageview.add(view3);
-
         group = (ViewGroup) findViewById(R.id.viewGroup);
 
         // 有多少张图就有多少个点点
@@ -109,14 +124,12 @@ public class HomeMainActivity extends AppCompatActivity {
             imageView.setLayoutParams(new ViewGroup.LayoutParams(20, 20));
             imageView.setPadding(20, 0, 20, 0);
             imageViews[i] = imageView;
-
             // 默认第一张图显示为选中状态
             if (i == 0) {
                 imageViews[i].setBackgroundResource(R.drawable.page_indicator_focused);
             } else {
                 imageViews[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
             }
-
             group.addView(imageViews[i]);
         }
         // 绑定适配器
@@ -132,22 +145,8 @@ public class HomeMainActivity extends AppCompatActivity {
         fab4 = (FloatingActionButton) findViewById(R.id.fab4);
         imageView = (ImageView) findViewById(R.id.image);
         listView = (ListView) findViewById(R.id.listView);
-
-
-//        HomeSummary homeSummary = new HomeSummary("—人文—",
-//                "当我读雅典学院的时", "喜欢博物馆，因为他是一方水土精粹文化的浓缩，在里面走上几个小时",
-//                "作者:张三", R.drawable.fly);
-
-        ArrayList<HomeSummary> list = new ArrayList();
-
-//        for (int i = 0; i < 20; i++) {
-//            list.add(homeSummary);
-//        }
+        list = new ArrayList();
         setSummary(list);
-        homeListViewAdapter homeListViewAdapter = new homeListViewAdapter(HomeMainActivity.this, list);
-        listView.setAdapter(homeListViewAdapter);
-
-
         //获取最小移动位置
         mTouch = 20;
         fab1.hide();
@@ -161,9 +160,11 @@ public class HomeMainActivity extends AppCompatActivity {
      */
     private void setSummary(final ArrayList<HomeSummary> list_summary) {
         BmobQuery<Article> query = new BmobQuery<>();
+        //缓存查询
+        query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
         //查询固定的列
         query.addQueryKeys("classify,title,summary,writer");
-//        query.order("updatedAt");
+        query.order("-updatedAt");
         query.addWhereEqualTo("level", 1);
         query.findObjects(new FindListener<Article>() {
             @Override
@@ -172,15 +173,23 @@ public class HomeMainActivity extends AppCompatActivity {
                     for (int i = 0; i < list.size(); i++) {
                         String s0 = new String("—" + list.get(i).getClassify() + "—");
                         String s1 = new String(list.get(i).getTitle());
-                        int len = list.get(i).getSummary().length();
-                        if (len>15){
-                            //最多截取15个字符
-                            len = 15;
+                        //加载封面
+
+                        //替换后截取
+                        String temp = new String(list.get(i).getSummary());
+                        temp = utils.setSummarys(temp);
+                        int len = temp.length();
+                        if (len>40){
+                            //最多截取40个字符
+                            len = 40;
                         }
-                        String s2 = new String(list.get(i).getSummary().substring(0,len));
+                        String s2 = new String(temp.substring(0,len));
                         String s3 = new String(list.get(i).getWriter());
                         list_summary.add(new HomeSummary(s0, s1, s2, s3, R.drawable.fly));
                     }
+                    Message message = new Message();
+                    message.what = LISTVIEW;
+                    handler.sendMessage(message);
                 }else {
                     Toast.makeText(HomeMainActivity.this,"刷新异常"+e.toString(),0).show();
                 }

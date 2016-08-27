@@ -64,6 +64,7 @@ public class homeListViewAdapter extends BaseAdapter {
         viewHolder.tv_title.setText(list.get(i).getTitle());
         viewHolder.tv_summary.setText(list.get(i).getSummary());
         viewHolder.tv_auth.setText(list.get(i).getAuth());
+
         viewHolder.imageView.setImageResource(list.get(i).getImageId());
         return view;
     }

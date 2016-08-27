@@ -243,4 +243,5 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         imageLoader.get(ImageUrl,listener);
         Log.d("test","下载结束");
     }
+
 }
