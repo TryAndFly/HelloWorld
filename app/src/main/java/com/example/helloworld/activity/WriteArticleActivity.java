@@ -53,7 +53,7 @@ public class WriteArticleActivity extends AppCompatActivity {
             switch (msg.what){
                 case GETURL:
                     String url = (String) msg.obj;
-//                    Log.d("test",url);
+                    Log.d("test",url);
                     FeedBackUrl feedBack = new FeedBackUrl();
                     feedBack.setUrl(url);
                     feedBack.save(new SaveListener<String>() {
@@ -102,6 +102,14 @@ public class WriteArticleActivity extends AppCompatActivity {
                 insertToArticle();
             }
         });
+
+        more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //点击后弹出菜单设置权限
+                Toast.makeText(WriteArticleActivity.this,"设置文章权限",0).show();
+            }
+        });
     }
 
     /**
@@ -115,13 +123,12 @@ public class WriteArticleActivity extends AppCompatActivity {
             int index = stringBuffer.indexOf(imageUrlReplace[i][0]);
             stringBuffer.replace(index,index + imageUrlReplace[i][0].length(),imageUrlReplace[i][1]);
         }
-//        Log.d("tests",stringBuffer.toString());
 
         final Article article = new Article();
         article.setArticleID(1);
-        article.setWriterID(123);
+        article.setWriter("张三");
         article.setLevel(1);
-        article.setClassifyID(12);
+        article.setClassify("故事");
         article.setTitle(title_et.getText().toString());
         article.setSummary(stringBuffer.toString());
         article.save(new SaveListener<String>() {
@@ -131,6 +138,7 @@ public class WriteArticleActivity extends AppCompatActivity {
                     Toast.makeText(WriteArticleActivity.this,"提交失败，请稍后再试",0).show();
                 }else {
                     Toast.makeText(WriteArticleActivity.this,"发表成功",0).show();
+                    finish();
                 }
             }
         });
@@ -172,7 +180,6 @@ public class WriteArticleActivity extends AppCompatActivity {
                     //存储插入的图片
                     imageUrlReplace[count][0]=img_url;
 
-//                    Log.d("test",editor.getText().toString());
                     // 上传该文件并获取url
                     new Thread(new Runnable() {
                         @Override
@@ -198,21 +205,18 @@ public class WriteArticleActivity extends AppCompatActivity {
                     message.what = ERROR;
                     handler.sendMessage(message);
                     //上传图片失败
-                    count--;
                 }else {
                     FeedBack feedBack = new FeedBack();
                     feedBack.setFace(icon);
                     feedBack.save();
                     //发送地址
                     String url = icon.getFileUrl();
-
                     imageUrlReplace[count][1]=url;
                     Message message = new Message();
                     message.what = GETURL;
                     message.obj = url;
                     handler.sendMessage(message);
                 }
-
             }
         });
     }

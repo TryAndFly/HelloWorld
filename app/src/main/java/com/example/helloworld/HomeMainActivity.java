@@ -16,23 +16,26 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.helloworld.activity.TestActivity;
 import com.example.helloworld.activity.WriteArticleActivity;
 import com.example.helloworld.adapter.homeListViewAdapter;
 import com.example.helloworld.bean.HomeSummary;
+import com.example.helloworld.bmob_bean.Article;
 import com.example.helloworld.view.homeScrollView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * MainActivity是整个程序的入口
  * 1.各个包的功能划分
- *      activity -->各个活动界面
- *      bean  -->实体类
- *      bmob -->操作服务端数据
- *
+ * activity -->各个活动界面
+ * bean  -->实体类
+ * bmob -->操作服务端数据
  */
 public class HomeMainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
@@ -63,7 +66,7 @@ public class HomeMainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         //Bmob接口密钥初始化
-        Bmob.initialize(this,"028acd02f32e5fb5fd2af4c29557cdcf");
+        Bmob.initialize(this, "028acd02f32e5fb5fd2af4c29557cdcf");
 
         //初始化的时候查询是否已经登录
 
@@ -73,7 +76,7 @@ public class HomeMainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         initView();
         setOnclick();
-        scrollView.smoothScrollTo(0,0);
+        scrollView.smoothScrollTo(0, 0);
 
 
         //测试
@@ -131,26 +134,58 @@ public class HomeMainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
 
 
-        HomeSummary homeSummary = new HomeSummary("—人文—",
-                "当我读雅典学院的时","喜欢博物馆，因为他是一方水土精粹文化的浓缩，在里面走上几个小时",
-                "作者:张三",R.drawable.fly);
+//        HomeSummary homeSummary = new HomeSummary("—人文—",
+//                "当我读雅典学院的时", "喜欢博物馆，因为他是一方水土精粹文化的浓缩，在里面走上几个小时",
+//                "作者:张三", R.drawable.fly);
 
         ArrayList<HomeSummary> list = new ArrayList();
 
-        for (int i = 0; i < 20; i++) {
-            list.add(homeSummary);
-        }
-
-        homeListViewAdapter homeListViewAdapter = new homeListViewAdapter(HomeMainActivity.this,list);
+//        for (int i = 0; i < 20; i++) {
+//            list.add(homeSummary);
+//        }
+        setSummary(list);
+        homeListViewAdapter homeListViewAdapter = new homeListViewAdapter(HomeMainActivity.this, list);
         listView.setAdapter(homeListViewAdapter);
 
 
         //获取最小移动位置
-        mTouch=20;
+        mTouch = 20;
         fab1.hide();
         fab2.hide();
         fab3.hide();
         fab4.hide();
+    }
+
+    /**
+     * 获取服务器文章数据,并填充到listView中
+     */
+    private void setSummary(final ArrayList<HomeSummary> list_summary) {
+        BmobQuery<Article> query = new BmobQuery<>();
+        //查询固定的列
+        query.addQueryKeys("classify,title,summary,writer");
+//        query.order("updatedAt");
+        query.addWhereEqualTo("level", 1);
+        query.findObjects(new FindListener<Article>() {
+            @Override
+            public void done(List<Article> list, BmobException e) {
+                if (e == null){
+                    for (int i = 0; i < list.size(); i++) {
+                        String s0 = new String("—" + list.get(i).getClassify() + "—");
+                        String s1 = new String(list.get(i).getTitle());
+                        int len = list.get(i).getSummary().length();
+                        if (len>15){
+                            //最多截取15个字符
+                            len = 15;
+                        }
+                        String s2 = new String(list.get(i).getSummary().substring(0,len));
+                        String s3 = new String(list.get(i).getWriter());
+                        list_summary.add(new HomeSummary(s0, s1, s2, s3, R.drawable.fly));
+                    }
+                }else {
+                    Toast.makeText(HomeMainActivity.this,"刷新异常"+e.toString(),0).show();
+                }
+            }
+        });
     }
 
     public void setOnclick() {
@@ -200,7 +235,7 @@ public class HomeMainActivity extends AppCompatActivity {
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(HomeMainActivity.this,"点击了编辑菜单",0).show();
+                Toast.makeText(HomeMainActivity.this, "点击了编辑菜单", 0).show();
                 Intent i = new Intent(HomeMainActivity.this, WriteArticleActivity.class);
                 startActivity(i);
             }
@@ -210,7 +245,7 @@ public class HomeMainActivity extends AppCompatActivity {
             @Override
             public void onScrollChange(View view, int i, int i1, int i2, int i3) {
 //                Log.d("test1","开始滑动了");
-                if(i1-i3>mTouch){
+                if (i1 - i3 > mTouch) {
                     if (!tag) {
                         fab.hide();
                     } else {
@@ -220,7 +255,7 @@ public class HomeMainActivity extends AppCompatActivity {
                         fab3.hide();
                         fab4.hide();
                     }
-                }else if (i3- i1 >mTouch){
+                } else if (i3 - i1 > mTouch) {
                     //上翻,显示
                     if (!tag) {
                         fab.show();

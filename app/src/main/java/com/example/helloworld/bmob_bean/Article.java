@@ -8,8 +8,9 @@ import cn.bmob.v3.BmobObject;
  */
 public class Article extends BmobObject{
     private int articleID;
-    private int writerID;
-    private int classifyID;
+    private String writer;
+    private String classify;
+
     private String title;
     private String summary;
     private int level;
@@ -23,20 +24,20 @@ public class Article extends BmobObject{
         this.articleID = articleID;
     }
 
-    public int getWriterID() {
-        return writerID;
+    public String getWriter() {
+        return writer;
     }
 
-    public void setWriterID(int writerID) {
-        this.writerID = writerID;
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 
-    public int getClassifyID() {
-        return classifyID;
+    public String getClassify() {
+        return classify;
     }
 
-    public void setClassifyID(int classifyID) {
-        this.classifyID = classifyID;
+    public void setClassify(String classify) {
+        this.classify = classify;
     }
 
     public String getTitle() {
