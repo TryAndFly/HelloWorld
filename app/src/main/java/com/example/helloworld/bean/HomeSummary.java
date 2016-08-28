@@ -4,18 +4,28 @@ package com.example.helloworld.bean;
  * Created by Administrator on 2016/8/22.
  */
 public class HomeSummary {
+    private String articleID;
     private String classify;
     private String title;
     private String summary;
     private String auth;
     private int imageId;
 
-    public HomeSummary(String classify, String title, String summary, String auth, int imageId) {
+    public HomeSummary(String articleID,String classify, String title, String summary, String auth, int imageId) {
+        this.articleID = articleID;
         this.classify = classify;
         this.title = title;
         this.summary = summary;
         this.auth = auth;
         this.imageId = imageId;
+    }
+
+    public String getArticleID() {
+        return articleID;
+    }
+
+    public void setArticleID(String articleID) {
+        this.articleID = articleID;
     }
 
     public String getClassify() {

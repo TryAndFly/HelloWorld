@@ -15,14 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.helloworld.activity.ReadArticleActivity;
 import com.example.helloworld.activity.WriteArticleActivity;
 import com.example.helloworld.adapter.homeListViewAdapter;
 import com.example.helloworld.bean.HomeSummary;
 import com.example.helloworld.bmob_bean.Article;
+import com.example.helloworld.util.Md5;
 import com.example.helloworld.util.utils;
 import com.example.helloworld.view.homeScrollView;
 
@@ -163,7 +166,7 @@ public class HomeMainActivity extends AppCompatActivity {
         //缓存查询
         query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
         //查询固定的列
-        query.addQueryKeys("classify,title,summary,writer");
+        query.addQueryKeys("articleID,classify,title,summary_part,writer");
         query.order("-updatedAt");
         query.addWhereEqualTo("level", 1);
         query.findObjects(new FindListener<Article>() {
@@ -171,27 +174,20 @@ public class HomeMainActivity extends AppCompatActivity {
             public void done(List<Article> list, BmobException e) {
                 if (e == null){
                     for (int i = 0; i < list.size(); i++) {
+                        String s = new String(list.get(i).getArticleID());
                         String s0 = new String("—" + list.get(i).getClassify() + "—");
                         String s1 = new String(list.get(i).getTitle());
                         //加载封面
-
-                        //替换后截取
-                        String temp = new String(list.get(i).getSummary());
-                        temp = utils.setSummarys(temp);
-                        int len = temp.length();
-                        if (len>40){
-                            //最多截取40个字符
-                            len = 40;
-                        }
-                        String s2 = new String(temp.substring(0,len));
+                        String s2 = new String(list.get(i).getSummary_part());
                         String s3 = new String(list.get(i).getWriter());
-                        list_summary.add(new HomeSummary(s0, s1, s2, s3, R.drawable.fly));
+                        list_summary.add(new HomeSummary(s,s0, s1, s2, s3, R.drawable.fly));
                     }
                     Message message = new Message();
                     message.what = LISTVIEW;
                     handler.sendMessage(message);
                 }else {
-                    Toast.makeText(HomeMainActivity.this,"刷新异常"+e.toString(),0).show();
+                    Toast.makeText(HomeMainActivity.this,"刷新异常",0).show();
+                    Log.d("test",e.toString());
                 }
             }
         });
@@ -276,6 +272,16 @@ public class HomeMainActivity extends AppCompatActivity {
                         fab4.show();
                     }
                 }
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, long id) {
+                HomeSummary homeSummary = (HomeSummary) adapterView.getItemAtPosition(position);
+                //点击阅读文章
+                Intent intent = new Intent(HomeMainActivity.this, ReadArticleActivity.class);
+                intent.putExtra("articleID",homeSummary.getArticleID());
+                startActivity(intent);
             }
         });
     }

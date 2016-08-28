@@ -20,6 +20,8 @@ import com.example.helloworld.R;
 import com.example.helloworld.bean.FeedBack;
 import com.example.helloworld.bean.FeedBackUrl;
 import com.example.helloworld.bmob_bean.Article;
+import com.example.helloworld.util.Md5;
+import com.example.helloworld.util.utils;
 import com.example.helloworld.view.articleEditor;
 
 import java.io.File;
@@ -125,12 +127,26 @@ public class WriteArticleActivity extends AppCompatActivity {
         }
 
         final Article article = new Article();
-        article.setArticleID(1);
+        //根据标题的MD5值设置成标题ID
+        article.setArticleID(Md5.md5Password(title_et.getText().toString()));
         article.setWriter("张三");
         article.setLevel(1);
+
         article.setClassify("故事");
         article.setTitle(title_et.getText().toString());
         article.setSummary(stringBuffer.toString());
+
+        //获取摘要
+        String temp = new String(stringBuffer.toString());
+        temp = utils.setSummarys(temp);
+        int len = temp.length();
+        if (len>40){
+            //最多截取40个字符
+            len = 40;
+        }
+        String s2 = new String(temp.substring(0,len));
+
+        article.setSummary_part(s2);
         article.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
